@@ -127,10 +127,11 @@ pub fn _print_panic<W: uWrite>(w: &mut W, info: &PanicInfo) {
     }
 
     if message_feature {
-        if let Some(str) = info.message().as_str() {
-            _ = core::fmt::write(&mut WriteWrapper(w), format_args!("{}", str));
-            _ = w.write_str("\r\n");
+        let message = info.message();
+        if let Some(message) = message.as_str() {
+            _ = w.write_str(message);
         }
+        _ = w.write_str("\r\n");
     }
 
     if !message_feature && !location_feature {
