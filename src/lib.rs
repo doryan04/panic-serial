@@ -96,9 +96,9 @@
 #![no_std]
 #![feature(panic_info_message)]
 
-use ufmt::uWrite;
-use core::panic::PanicInfo;
 use core::fmt::Write;
+use core::panic::PanicInfo;
+use ufmt::uWrite;
 
 struct WriteWrapper<'a, W: uWrite>(&'a mut W);
 
@@ -110,12 +110,18 @@ impl<'a, W: uWrite> Write for WriteWrapper<'a, W> {
 
 /// Called internally by the panic handler.
 pub fn _print_panic<W: uWrite>(w: &mut W, info: &PanicInfo) {
-    let location_feature = cfg!(feature="location");
-    let message_feature = cfg!(feature="message");
+    let location_feature = cfg!(feature = "location");
+    let message_feature = cfg!(feature = "message");
 
     if location_feature {
         if let Some(location) = info.location() {
-            _ = ufmt::uwrite!(w, "Panic at {}:{}:{}", location.file(), location.line(), location.column());
+            _ = ufmt::uwrite!(
+                w,
+                "Panic at {}:{}:{}",
+                location.file(),
+                location.line(),
+                location.column()
+            );
             _ = w.write_str(if message_feature { ": " } else { "\r\n" });
         }
     }
