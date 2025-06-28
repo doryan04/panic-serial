@@ -115,13 +115,8 @@ pub fn _print_panic<W: uWrite>(w: &mut W, info: &PanicInfo) {
 
     if location_feature {
         if let Some(location) = info.location() {
-            _ = ufmt::uwrite!(
-                w,
-                "Panic at {}:{}:{}",
-                location.file(),
-                location.line(),
-                location.column()
-            );
+            let file = location.file().rsplit("/").last().unwrap_or("unknown file");
+            _ = ufmt::uwrite!(w, "Panic at {}:{}", file, location.line(),);
             _ = w.write_str(if message_feature { ": " } else { "\r\n" });
         }
     }
